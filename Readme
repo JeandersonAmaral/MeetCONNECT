@@ -1,6 +1,3 @@
-# Creating a README.md file based on the provided content
-
-readme_content = """
 # Sistema de Gerenciamento de Salas com Chat
 
 Este projeto é um sistema de gerenciamento de salas, onde usuários podem criar, visualizar, entrar e excluir salas. Cada sala possui capacidade limitada e um chat em tempo real, implementado com `Socket.IO`. O sistema também possui autenticação de usuários utilizando `JWT` para garantir que apenas usuários autenticados possam acessar o chat.
