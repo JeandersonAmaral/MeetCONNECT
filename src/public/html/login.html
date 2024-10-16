@@ -24,9 +24,14 @@
             </div>
             <button type="submit"
                 class="w-full bg-green-600 hover:bg-green-500 text-white p-2 rounded-md">Entrar</button>
-            <button type="button" id="registerButton"
-                class="w-full mt-2 bg-gray-600 hover:bg-gray-500 text-white p-2 rounded-md">Registrar</button>
         </form>
+        
+        <!-- Frase de registro -->
+        <p class="text-gray-300 mt-4 text-center">
+            Ainda não tem uma conta? 
+            <a href="register.html" class="text-green-500 hover:underline">Clique aqui</a>
+        </p>
+
         <p id="error-message" class="text-red-500 mt-2 hidden"></p>
 
         <!-- Indicador de Carregamento -->
@@ -45,11 +50,6 @@
         class="fixed bottom-10 right-10 h-12">
 
     <script src="../js/login.js"></script>
-    <script>
-        document.getElementById('registerButton').addEventListener('click', () => {
-            window.location.href = 'register.html'; // Redireciona para a página de registro
-        });
-    </script>
 </body>
 
 </html>
