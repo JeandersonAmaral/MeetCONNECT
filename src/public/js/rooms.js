@@ -38,25 +38,31 @@ async function listRooms() {
 function renderRoom(room) {
     const roomContainer = document.getElementById('roomContainer');
     const card = document.createElement('div');
-    card.className = 'bg-neutral-800 p-4 rounded-md shadow-lg';
+    card.className = 'bg-neutral-800 p-4 rounded-md shadow-lg flex flex-col justify-between h-full';
 
     // Define a palavra "usuário" no singular ou plural
     const userCapacityText = room.capacity === 1 ? 'usuário' : 'usuários';
 
+    // Limita a descrição a 100 caracteres
+    const roomDescription = room.description ? room.description : 'N/A';
+    const truncatedDescription = roomDescription.length > 100 ? roomDescription.substring(0, 100) + '...' : roomDescription;
+
     card.innerHTML = `
-        <h3 class="font-bold text-2xl mb-2">${room.name}</h3>
-        <span class="font-bold">Descrição:</span> ${room.description || 'N/A'}
-        <br>
-        <span class="font-bold">Capacidade:</span> ${room.capacity} ${userCapacityText}
-        <br>
-        <span class="font-bold">Status: </span> 
-        <span class="${room.isActive ? 'text-green-500' : 'text-red-500'} italic">
-            ${room.isActive ? 'Ativa' : 'Inativa'}
-        </span>
-        <br>
-        <br>
-        <button onclick="joinRoom('${room._id}')" class="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded-md">Entrar</button>
-        <button onclick="openConfirmationModal('${room.name}', '${room._id}')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-md">Excluir</button>
+        <div class="flex-grow">
+            <h3 class="font-bold text-2xl mb-2">${room.name}</h3>
+            <span class="font-bold">Descrição:</span> ${truncatedDescription}
+            <br>
+            <span class="font-bold">Capacidade:</span> ${room.capacity} ${userCapacityText}
+            <br>
+            <span class="font-bold">Status: </span> 
+            <span class="${room.isActive ? 'text-green-500' : 'text-red-500'} italic">
+                ${room.isActive ? 'Ativa' : 'Inativa'}
+            </span>
+        </div>
+        <div class="mt-auto flex justify-end space-x-2">
+            <button onclick="joinRoom('${room._id}')" class="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded-md">Entrar</button>
+            <button onclick="openConfirmationModal('${room.name}', '${room._id}')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-md">Excluir</button>
+        </div>
     `;
     roomContainer.appendChild(card);
 }
@@ -154,12 +160,24 @@ document.getElementById('createRoomForm').onsubmit = async (event) => {
 
 // Função de logout
 function logout() {
+    const modal = document.getElementById('logoutModal');
+    modal.classList.remove('hidden'); // Abre o modal
+}
+
+// Função para confirmar logout
+document.getElementById('confirmLogout').addEventListener('click', () => {
     // Remove o token do localStorage
     localStorage.removeItem('token');
-    // Redireciona para a tela de login
-    alert('Você será desconectado. Faça login novamente para ver as salas.'); // Alerta de logout
-    window.location.href = '../html/login.html'; // Ajuste o caminho conforme necessário
+    closeLogoutModal(); // Fecha o modal
+    window.location.href = '../html/login.html'; // Redireciona para a tela de login
+});
+
+// Função para fechar o modal de logout
+function closeLogoutModal() {
+    const modal = document.getElementById('logoutModal');
+    modal.classList.add('hidden');
 }
+
 
 // Verifica se o usuário está logado
 function checkAuthentication() {
