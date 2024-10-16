@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeetCONNECT | Salas Disponíveis</title>
+    <script defer src="../js/rooms.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex flex-col">
+    <header class="bg-gray-800 text-white p-4 shadow-lg">
+        <div class="container mx-auto text-center">
+            <h1 class="text-xl font-bold">SALAS DISPONÍVEIS</h1>
+        </div>
+    </header>
+    
+    <div class="container mx-auto my-6 flex justify-between"> <!-- Adiciona flex para alinhamento -->
+        <button id="createRoomBtn" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded">Criar Nova Sala</button>
+        <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 p-2 rounded w-20">Sair</button> <!-- Botão de Sair aqui -->
+    </div>
+
+    <div id="roomContainer" class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+
+    <div id="createRoomModal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center">
+        <div class="bg-gray-800 p-6 rounded shadow-lg w-full max-w-md text-white">
+            <h2 class="text-xl font-bold mb-4">Nova Sala</h2>
+            <form id="createRoomForm">
+                <div class="mb-4">
+                    <label for="roomName" class="block text-sm font-medium">Nome da Sala</label>
+                    <input type="text" id="roomName" class="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label for="roomDescription" class="block text-sm font-medium">Descrição</label>
+                    <textarea id="roomDescription" class="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="roomCapacity" class="block text-sm font-medium">Capacidade</label>
+                    <input type="number" id="roomCapacity" class="w-full p-2 bg-gray-700 text-white border border-gray-600 rounded" required>
+                </div>
+                <div class="flex justify-between">
+                    <button type="button" id="closeModal" class="bg-red-600 hover:bg-red-700 text-white hover:text-red-500 p-2 rounded">Cancelar</button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded">Criar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <img src="../images/Marca-Univassouras-Campus-Universitario-de-Marica.png" alt="logo da universidade"
+    class="fixed bottom-10 right-10 h-12">
+
+     <!-- Rodapé estilizado -->
+     <footer class="mt-auto bg-gray-800">
+        <div class="container mx-auto text-center">
+            <p class="text-gray-400 text-sm">Designed by Jeanderson Amaral</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('createRoomBtn').addEventListener('click', () => {
+            document.getElementById('createRoomModal').classList.remove('hidden');
+        });
+
+        document.getElementById('closeModal').addEventListener('click', () => {
+            document.getElementById('createRoomModal').classList.add('hidden');
+        });
+
+        document.getElementById('createRoomForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            await createRoom();
+        });
+    </script>
+</body>
+
+</html>

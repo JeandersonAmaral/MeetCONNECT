@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat da Sala</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-900 flex flex-col items-center justify-center min-h-screen">
+    <div class="bg-gray-800 rounded-lg shadow-lg p-4 w-full max-w-lg">
+        <h2 class="text-xl font-semibold mb-4 text-white text-center">MeetCONNECT</h2>
+        <div id="chatWindow"
+            class="border border-gray-600 rounded-lg h-64 overflow-y-auto p-2 mb-4 bg-gray-700 text-white">
+            <!-- Mensagens serão exibidas aqui -->
+        </div>
+        <form id="messageForm" class="flex">
+            <input type="text" id="messageInput"
+                class="border border-gray-600 rounded-l-lg px-2 py-2 w-full bg-gray-700 text-white"
+                placeholder="Digite sua mensagem..." required>
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-r-lg">Enviar</button>
+        </form>
+        <!-- Botão de voltar posicionado na parte inferior -->
+        <div class="flex justify-center mt-4">
+            <button id="backButton" class="bg-blue-500 text-white px-4 py-2 rounded">Voltar</button>
+        </div>
+    </div>
+    <img src="./images/Marca-Univassouras-Campus-Universitario-de-Marica.png" alt="logo da universidade"
+        class="fixed bottom-10 right-10 h-12">
+    <!-- Carregamento dos scripts -->
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jwt-decode/3.1.2/jwt-decode.min.js" defer></script>
+    <script src="./js/chat.js" defer type="module"></script>
+    <script>
+        // Lógica para o botão de voltar
+        document.getElementById('backButton').addEventListener('click', () => {
+            window.history.back(); // Volta para a página anterior
+        });
+    </script>
+</body>
+
+</html>
