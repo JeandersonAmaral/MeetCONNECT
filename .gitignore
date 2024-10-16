@@ -1,0 +1,28 @@
+# .gitignore
+.env
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+
+# Build directories
+dist/
+build/
+
+# IDE and editor settings
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# MongoDB files
+data/
+dump/
