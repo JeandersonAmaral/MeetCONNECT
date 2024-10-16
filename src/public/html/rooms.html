@@ -24,7 +24,7 @@
     </div>
 
     <div id="roomContainer" class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
-
+    <!-- Modal de Criação -->
     <div id="createRoomModal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center">
         <div class="bg-neutral-800 p-6 rounded shadow-lg w-full max-w-md text-white">
             <h2 class="text-xl font-bold mb-4">Nova Sala</h2>
@@ -48,8 +48,8 @@
                 </div>
                 <div class="flex justify-between">
                     <button type="button" id="closeModal"
-                        class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-md">Cancelar</button>
-                    <button type="submit" class="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded-md">Criar</button>
+                        class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-md w-32">Cancelar</button>
+                    <button type="submit" class="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded-md w-32">Criar</button>
                 </div>
             </form>
         </div>
@@ -58,13 +58,13 @@
     <!-- Modal de Confirmação de Exclusão -->
     <div id="confirmationModal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center">
         <div class="bg-neutral-800 p-6 rounded shadow-lg w-full max-w-md text-white">
-            <h2 class="text-xl font-bold mb-4">Confirmação de Exclusão</h2>
-            <p id="modalMessage" class="mb-4">Você tem certeza que deseja excluir esta sala?</p>
+            <h2 class="text-xl font-bold mb-4 text-center">Calma Jovem!</h2>
+            <p id="modalMessage" class="mb-4 text-center"></p>
             <div class="flex justify-between">
                 <button onclick="closeConfirmationModal()"
-                    class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-md">Cancelar</button>
+                    class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-md w-32">Cancelar</button>
                 <button id="confirmDeleteButton"
-                    class="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded-md">Confirmar</button>
+                    class="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded-md w-32">Confirmar</button>
             </div>
         </div>
     </div>
@@ -76,9 +76,9 @@
             <p class="text-gray-300">Você será desconectado agora.<br>Faça login novamente para ver as salas.</p>
             <div class="mt-4 flex justify-center space-x-4">
                 <button onclick="closeLogoutModal()"
-                    class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-md">Cancelar</button>
+                    class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-md w-32">Cancelar</button>
                 <button id="confirmLogout"
-                    class="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded-md">Confirmar</button>
+                    class="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded-md w-32">Confirmar</button>
             </div>
         </div>
     </div>
