@@ -44,26 +44,47 @@ function renderRoom(room) {
 
     card.innerHTML = `
         <h3 class="font-bold text-2xl mb-2">${room.name}</h3>
-        <div class="mb-2">
-            <span class="font-bold">Descrição:</span> ${room.description.length > 100 ? room.description.substring(0, 100) + '...' : room.description}
-        </div>
-        <div class="mb-2">
-            <span class="font-bold">Capacidade:</span> ${room.capacity} ${userCapacityText}
-        </div>
-        <div class="mb-2">
-            <span class="font-bold">Status:</span> 
-            <span class="${room.isActive ? 'text-green-500' : 'text-red-500'} italic">
-                ${room.isActive ? 'Ativa' : 'Inativa'}
-            </span>
-        </div>
+        <span class="font-bold">Descrição:</span> ${room.description.length > 100 ? room.description.substring(0, 100) + '...' : room.description}
+        <br>
+        <span class="font-bold">Capacidade:</span> ${room.capacity} ${userCapacityText}
+        <br>
+        <span class="font-bold">Status: </span> 
+        <span class="${room.isActive ? 'text-green-500' : 'text-red-500'} italic">
+            ${room.isActive ? 'Ativa' : 'Inativa'}
+        </span>
+        <br>
         <div class="justify-between items-center">
+            <button onclick="toggleRoomStatus('${room._id}', ${!room.isActive})" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-md w-15">Mudar Status</button>
             <button onclick="openEditModal('${room._id}', '${room.name}', '${room.description}', ${room.capacity})" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-md w-15">Editar</button>
             <button onclick="openConfirmationModal('${room.name}', '${room._id}')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-md w-15">Excluir</button>
             <button onclick="joinRoom('${room._id}')" class="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded-md w-15">Entrar</button>
         </div>
     `;
-    
     roomContainer.appendChild(card);
+}
+
+async function toggleRoomStatus(roomId, newStatus) {
+    try {
+        const response = await fetch(`http://localhost:3000/api/rooms/${roomId}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify({ status: newStatus }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro ao mudar o status da sala.');
+        }
+
+        const data = await response.json();
+        alert(data.message); // Notifica o usuário sobre o sucesso da operação
+        listRooms(); // Atualiza a lista de salas para refletir a mudança
+    } catch (error) {
+        console.error('Erro ao mudar o status da sala:', error);
+        alert('Ocorreu um erro ao mudar o status da sala.');
+    }
 }
 
 // Função para criar uma nova sala

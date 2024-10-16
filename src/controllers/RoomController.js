@@ -1,4 +1,5 @@
 // src/controllers/RoomController.js
+const Room = require('../models/Room');
 const RoomRepository = require("../repositories/RoomRepository");
 
 class RoomController {
@@ -46,7 +47,7 @@ class RoomController {
             if (!updatedRoom) {
                 return res.status(404).json({ message: "Sala não encontrada" });
             }
-            
+
             res.status(200).json({ message: "Sala atualizada com sucesso!", room: updatedRoom });
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -81,6 +82,27 @@ class RoomController {
             res.status(500).json({ message: error.message });
         }
     }
+
+    async updateRoomStatus(req, res) {
+        const { id } = req.params; // Obtém o ID da sala a partir dos parâmetros da requisição
+
+        try {
+            const room = await Room.findById(id); // Encontra a sala pelo ID
+            if (!room) {
+                return res.status(404).json({ message: 'Sala não encontrada' }); // Retorna 404 se a sala não existir
+            }
+            
+            room.isActive = !room.isActive; // Inverte o status da sala
+            await room.save(); // Salva as alterações
+            
+            res.status(200).json({ message: 'Status da sala atualizado com sucesso', room });
+        } catch (error) {
+            console.error('Erro ao mudar o status da sala:', error); // Log do erro
+            res.status(500).json({ message: 'Erro ao mudar o status da sala', error: error.message }); // Retorna 500 em caso de erro
+        }
+    }
+
+ 
 }
 
 module.exports = new RoomController();

@@ -9,6 +9,7 @@ router.get('/rooms/:id', RoomController.show); // Mostra uma sala pelo ID
 router.post('/rooms', RoomController.store); // Cria uma nova sala
 router.post('/rooms/:id/join', RoomController.join); // Endpoint para entrada na sala
 router.delete('/rooms/:id', RoomController.destroy); // Exclui uma sala
-router.put('/rooms/:id', RoomController.update); // Atualiza uma sala pelo ID (nova rota)
+router.put('/rooms/:id', RoomController.update); // Atualiza uma sala pelo ID
+router.put('/rooms/:id/status', RoomController.updateRoomStatus); // Rota para atualizar o status
 
 module.exports = router;
