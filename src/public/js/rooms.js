@@ -34,36 +34,35 @@ async function listRooms() {
     }
 }
 
-// Função para renderizar uma sala
 function renderRoom(room) {
     const roomContainer = document.getElementById('roomContainer');
     const card = document.createElement('div');
-    card.className = 'bg-neutral-800 p-4 rounded-md shadow-lg flex flex-col justify-between h-full';
+    card.className = 'bg-neutral-800 p-4 rounded-md shadow-lg flex flex-col justify-between';
 
     // Define a palavra "usuário" no singular ou plural
     const userCapacityText = room.capacity === 1 ? 'usuário' : 'usuários';
 
-    // Limita a descrição a 100 caracteres
-    const roomDescription = room.description ? room.description : 'N/A';
-    const truncatedDescription = roomDescription.length > 100 ? roomDescription.substring(0, 100) + '...' : roomDescription;
-
     card.innerHTML = `
-        <div class="flex-grow">
-            <h3 class="font-bold text-2xl mb-2">${room.name}</h3>
-            <span class="font-bold">Descrição:</span> ${truncatedDescription}
-            <br>
+        <h3 class="font-bold text-2xl mb-2">${room.name}</h3>
+        <div class="mb-2">
+            <span class="font-bold">Descrição:</span> ${room.description.length > 100 ? room.description.substring(0, 100) + '...' : room.description}
+        </div>
+        <div class="mb-2">
             <span class="font-bold">Capacidade:</span> ${room.capacity} ${userCapacityText}
-            <br>
-            <span class="font-bold">Status: </span> 
+        </div>
+        <div class="mb-2">
+            <span class="font-bold">Status:</span> 
             <span class="${room.isActive ? 'text-green-500' : 'text-red-500'} italic">
                 ${room.isActive ? 'Ativa' : 'Inativa'}
             </span>
         </div>
-        <div class="mt-auto flex justify-end space-x-2">
-            <button onclick="joinRoom('${room._id}')" class="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded-md">Entrar</button>
-            <button onclick="openConfirmationModal('${room.name}', '${room._id}')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-md">Excluir</button>
+        <div class="justify-between items-center">
+            <button onclick="openEditModal('${room._id}', '${room.name}', '${room.description}', ${room.capacity})" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-md w-15">Editar</button>
+            <button onclick="openConfirmationModal('${room.name}', '${room._id}')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-md w-15">Excluir</button>
+            <button onclick="joinRoom('${room._id}')" class="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded-md w-15">Entrar</button>
         </div>
     `;
+    
     roomContainer.appendChild(card);
 }
 
@@ -102,6 +101,62 @@ async function createRoom() {
         alert('Ocorreu um erro ao criar a sala.');
     }
 }
+
+// Função para abrir o modal de edição com as informações atuais da sala
+function openEditModal(roomId, roomName, roomDescription, roomCapacity) {
+    document.getElementById('editRoomName').value = roomName;
+    document.getElementById('editRoomDescription').value = roomDescription;
+    document.getElementById('editRoomCapacity').value = roomCapacity;
+    
+    const editRoomForm = document.getElementById('editRoomForm');
+    editRoomForm.setAttribute('data-room-id', roomId); // Armazena o ID da sala no formulário
+
+    document.getElementById('editRoomModal').classList.remove('hidden');
+}
+
+// Função para fechar o modal de edição
+function closeEditModal() {
+    document.getElementById('editRoomModal').classList.add('hidden');
+}
+
+// Função para salvar as alterações da sala
+document.getElementById('editRoomForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    
+    const roomId = this.getAttribute('data-room-id'); // Pega o ID da sala do formulário
+    const roomName = document.getElementById('editRoomName').value;
+    const roomDescription = document.getElementById('editRoomDescription').value;
+    const roomCapacity = document.getElementById('editRoomCapacity').value;
+    const token = localStorage.getItem('token');
+
+    try {
+        const response = await fetch(`http://localhost:3000/api/rooms/${roomId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                name: roomName,
+                description: roomDescription,
+                capacity: roomCapacity
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro ao editar a sala.');
+        }
+
+        const updatedRoom = await response.json();
+        alert('Sala editada com sucesso!');
+        closeEditModal(); // Fecha o modal
+        listRooms(); // Atualiza a lista de salas
+    } catch (error) {
+        console.error('Erro ao editar sala:', error);
+        alert('Ocorreu um erro ao editar a sala.');
+    }
+});
+
 
 // Função para abrir o modal de confirmação
 function openConfirmationModal(roomName, roomId) {
