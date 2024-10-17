@@ -44,14 +44,16 @@ function renderRoom(room) {
 
     card.innerHTML = `
         <h3 class="font-bold text-2xl mb-2">${room.name}</h3>
-        <span class="font-bold">Descrição:</span> ${room.description.length > 100 ? room.description.substring(0, 100) + '...' : room.description}
-        <br>
-        <span class="font-bold">Capacidade:</span> ${room.capacity} ${userCapacityText}
-        <br>
-        <span class="font-bold">Status: </span> 
-        <span class="${room.isActive ? 'text-green-500' : 'text-red-500'} italic">
-            ${room.isActive ? 'Ativa' : 'Inativa'}
-        </span>
+        <div class="mb-2">
+            <span class="font-bold">Descrição:</span> ${room.description.length > 100 ? room.description.substring(0, 100) + '...' : room.description}
+        </div>
+        <div class="mb-2">
+            <span class="font-bold">Capacidade:</span> ${room.capacity} ${userCapacityText}
+        </div>
+        <div>
+            <span class="font-bold">Status: </span> 
+            <span class="${room.isActive ? 'text-green-500' : 'text-red-500'} italic">${room.isActive ? 'Ativa' : 'Inativa'}</span>
+        </div>
         <br>
         <div class="justify-between items-center">
             <button onclick="toggleRoomStatus('${room._id}', ${!room.isActive})" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-md w-15">Mudar Status</button>
@@ -128,7 +130,7 @@ function openEditModal(roomId, roomName, roomDescription, roomCapacity) {
     document.getElementById('editRoomName').value = roomName;
     document.getElementById('editRoomDescription').value = roomDescription;
     document.getElementById('editRoomCapacity').value = roomCapacity;
-    
+
     const editRoomForm = document.getElementById('editRoomForm');
     editRoomForm.setAttribute('data-room-id', roomId); // Armazena o ID da sala no formulário
 
@@ -141,9 +143,9 @@ function closeEditModal() {
 }
 
 // Função para salvar as alterações da sala
-document.getElementById('editRoomForm').addEventListener('submit', async function(event) {
+document.getElementById('editRoomForm').addEventListener('submit', async function (event) {
     event.preventDefault();
-    
+
     const roomId = this.getAttribute('data-room-id'); // Pega o ID da sala do formulário
     const roomName = document.getElementById('editRoomName').value;
     const roomDescription = document.getElementById('editRoomDescription').value;
