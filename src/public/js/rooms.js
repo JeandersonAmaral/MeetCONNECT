@@ -21,7 +21,7 @@ async function listRooms() {
 
         // Verifica se existem salas
         if (rooms.length === 0) {
-            roomContainer.innerHTML = '<div class="text-center">Nenhuma sala disponível</div>';
+            roomContainer.innerHTML = '<div class="text-center text-white">Nenhuma sala disponível</div>';
             return;
         }
 
@@ -37,55 +37,71 @@ async function listRooms() {
 function renderRoom(room) {
     const roomContainer = document.getElementById('roomContainer');
     const card = document.createElement('div');
-    card.className = 'bg-neutral-800 p-4 rounded-md shadow-lg flex flex-col justify-between';
+    card.className = 'bg-neutral-800 p-4 rounded-md shadow-lg flex flex-col justify-between mb-4 relative';
 
     // Define a palavra "usuário" no singular ou plural
     const userCapacityText = room.capacity === 1 ? 'usuário' : 'usuários';
 
+    // Criar o HTML do card com o toggle switch
     card.innerHTML = `
-        <h3 class="font-bold text-2xl mb-2">${room.name}</h3>
+        <h3 class="font-bold text-2xl mb-2 text-white">${room.name}</h3>
         <div class="mb-2">
-            <span class="font-bold">Descrição:</span> ${room.description.length > 100 ? room.description.substring(0, 100) + '...' : room.description}
+            <span class="font-bold text-gray-300">Descrição:</span> ${room.description.length > 100 ? room.description.substring(0, 100) + '...' : room.description}
         </div>
         <div class="mb-2">
-            <span class="font-bold">Capacidade:</span> ${room.capacity} ${userCapacityText}
+            <span class="font-bold text-gray-300">Capacidade:</span> ${room.capacity} ${userCapacityText}
         </div>
-        <div>
-            <span class="font-bold">Status: </span> 
-            <span class="${room.isActive ? 'text-green-500' : 'text-red-500'} italic">${room.isActive ? 'Ativa' : 'Inativa'}</span>
+        <div class="mb-2">
+            <span class="font-bold text-gray-300">Status:</span> <span id="status-${room._id}" class=" italic text-${room.isActive ? 'green' : 'red'}-500">${room.isActive ? 'Ativa' : 'Inativa'}</span>
         </div>
-        <br>
-        <div class="justify-between items-center">
-            <button onclick="toggleRoomStatus('${room._id}', ${!room.isActive})" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-md w-15">Mudar Status</button>
-            <button onclick="openEditModal('${room._id}', '${room.name}', '${room.description}', ${room.capacity})" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-md w-15">Editar</button>
-            <button onclick="openConfirmationModal('${room.name}', '${room._id}')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-md w-15">Excluir</button>
-            <button onclick="joinRoom('${room._id}')" class="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded-md w-15">Entrar</button>
+        <div class="absolute top-4 right-4">
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" class="sr-only peer" ${room.isActive ? 'checked' : ''} onchange="toggleRoomStatus('${room._id}', this.checked)" />
+                <div class="w-11 h-6 bg-neutral-600 rounded-full peer-checked:bg-green-600 transition-colors duration-200"></div>
+                <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-200 peer-checked:translate-x-5"></div>
+            </label>
+        </div>
+        <div class="flex space-x-2">
+            <button onclick="openEditModal('${room._id}', '${room.name}', '${room.description}', ${room.capacity})" class="bg-yellow-600 hover:bg-yellow-500 text-white p-2 rounded-md">Editar</button>
+            <button onclick="openConfirmationModal('${room.name}', '${room._id}')" class="bg-red-600 hover:bg-red-500 text-white p-2 rounded-md">Excluir</button>
+            <button onclick="joinRoom('${room._id}')" class="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded-md">Entrar</button>
         </div>
     `;
+
     roomContainer.appendChild(card);
 }
 
 async function toggleRoomStatus(roomId, newStatus) {
+    const token = localStorage.getItem('token');
+
     try {
         const response = await fetch(`http://localhost:3000/api/rooms/${roomId}/status`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify({ status: newStatus }),
         });
 
         if (!response.ok) {
-            throw new Error('Erro ao mudar o status da sala.');
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Erro ao mudar o status da sala.');
         }
 
         const data = await response.json();
-        alert(data.message); // Notifica o usuário sobre o sucesso da operação
-        listRooms(); // Atualiza a lista de salas para refletir a mudança
+
+        // Atualizar o status da sala no front-end
+        const statusElement = document.getElementById(`status-${roomId}`);
+        statusElement.textContent = newStatus ? 'Ativa' : 'Inativa';
+        statusElement.classList.toggle('text-green-500', newStatus);
+        statusElement.classList.toggle('text-red-500', !newStatus);
+
+        // Atualiza a lista de salas para refletir a mudança, se necessário
+        // listRooms();
     } catch (error) {
         console.error('Erro ao mudar o status da sala:', error);
-        alert('Ocorreu um erro ao mudar o status da sala.');
+        // Removi o alerta, agora só loga no console
     }
 }
 
@@ -180,14 +196,13 @@ document.getElementById('editRoomForm').addEventListener('submit', async functio
     }
 });
 
-
 // Função para abrir o modal de confirmação
 function openConfirmationModal(roomName, roomId) {
     const modal = document.getElementById('confirmationModal');
     const modalMessage = document.getElementById('modalMessage');
     const confirmButton = document.getElementById('confirmDeleteButton');
 
-    modalMessage.textContent = `Tem certeza que deseja excluia a sala "${roomName}"?`;
+    modalMessage.textContent = `Tem certeza que deseja excluir a sala "${roomName}"?`;
     confirmButton.setAttribute('onclick', `deleteRoom('${roomId}')`); // Atualiza o botão de confirmação com o ID da sala
     modal.classList.remove('hidden');
 }
@@ -235,7 +250,6 @@ document.getElementById('createRoomForm').onsubmit = async (event) => {
     await createRoom(); // Chama a função de criar sala
 };
 
-
 // Função de logout
 function logout() {
     const modal = document.getElementById('logoutModal');
@@ -255,7 +269,6 @@ function closeLogoutModal() {
     const modal = document.getElementById('logoutModal');
     modal.classList.add('hidden');
 }
-
 
 // Verifica se o usuário está logado
 function checkAuthentication() {

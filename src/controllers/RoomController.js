@@ -85,7 +85,7 @@ class RoomController {
 
     async updateRoomStatus(req, res) {
         const { id } = req.params; // Obtém o ID da sala a partir dos parâmetros da requisição
-
+    
         try {
             const room = await Room.findById(id); // Encontra a sala pelo ID
             if (!room) {
@@ -95,14 +95,14 @@ class RoomController {
             room.isActive = !room.isActive; // Inverte o status da sala
             await room.save(); // Salva as alterações
             
-            res.status(200).json({ message: 'Status da sala atualizado com sucesso', room });
+            // Retorna apenas o objeto da sala sem mensagem de sucesso
+            res.status(200).json(room);
         } catch (error) {
             console.error('Erro ao mudar o status da sala:', error); // Log do erro
             res.status(500).json({ message: 'Erro ao mudar o status da sala', error: error.message }); // Retorna 500 em caso de erro
         }
-    }
+    }    
 
- 
 }
 
 module.exports = new RoomController();
