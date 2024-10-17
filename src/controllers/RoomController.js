@@ -1,4 +1,5 @@
 // src/controllers/RoomController.js
+const jwt = require('jsonwebtoken');
 const Room = require('../models/Room');
 const RoomRepository = require("../repositories/RoomRepository");
 
@@ -29,14 +30,29 @@ class RoomController {
     async store(req, res) {
         const roomRepository = new RoomRepository();
         try {
+            // Captura o token do header de autorização
+            const token = req.headers.authorization.split(' ')[1]; 
+            const decodedToken = jwt.verify(token, 'supersecretkey123'); // Decodifica o token
+
+            // Extrai o ID ou nome do usuário do token
+            const username = decodedToken.username; // Supondo que o nome do usuário esteja no token
+
+            // Captura os dados da sala do corpo da requisição
             const { name, description, capacity } = req.body;
-            const newRoom = await roomRepository.createRoom({ name, description, capacity });
+
+            // Cria a nova sala, incluindo o criador
+            const newRoom = await roomRepository.createRoom({ 
+                name, 
+                description, 
+                capacity, 
+                createdBy: username // Passa o nome do criador
+            });
+
             res.status(201).json({ message: "Sala criada com sucesso!", room: newRoom });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
-
     async update(req, res) {
         const roomRepository = new RoomRepository();
         try {

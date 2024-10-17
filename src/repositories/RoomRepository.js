@@ -18,7 +18,7 @@ class RoomRepository {
         }
     }
 
-    async createRoom({ name, description, capacity }) {
+    async createRoom({ name, description, capacity, createdBy }) { // Adicione createdBy
         try {
             const newRoom = new Room({
                 name,
@@ -26,12 +26,14 @@ class RoomRepository {
                 capacity,
                 isActive: true,
                 createdAt: new Date(),
+                createdBy // Adiciona o nome do criador
             });
             return await newRoom.save(); // Cria e salva a nova sala
         } catch (error) {
             throw new Error('Erro ao criar a sala: ' + error.message);
         }
     }
+    
 
     async updateRoom(id, { name, description, capacity }) {
         try {
