@@ -42,7 +42,14 @@ function renderRoom(room) {
     // Define a palavra "usuário" no singular ou plural
     const userCapacityText = room.capacity === 1 ? 'usuário' : 'usuários';
 
-    // Criar o HTML do card com o toggle switch
+    // Formatar a data de criação
+    const createdDate = new Date(room.createdAt).toLocaleDateString('pt-BR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+
+    // Criar o HTML do card com as informações adicionais
     card.innerHTML = `
         <h3 class="font-bold text-2xl mb-2 text-white">${room.name}</h3>
         <div class="mb-2">
@@ -52,12 +59,18 @@ function renderRoom(room) {
             <span class="font-bold text-gray-300">Capacidade:</span> ${room.capacity} ${userCapacityText}
         </div>
         <div class="mb-2">
+            <span class="font-bold text-gray-300">Criação:</span> ${createdDate}
+        </div>
+        <div class="mb-2">
+            <span class="font-bold text-gray-300">Criador:</span> ${room.createdBy}
+        </div>
+        <div class="mb-2">
             <span class="font-bold text-gray-300">Status:</span> <span id="status-${room._id}" class=" italic text-${room.isActive ? 'green' : 'red'}-500">${room.isActive ? 'Ativa' : 'Inativa'}</span>
         </div>
-        <div class="absolute top-4 right-4">
+        <div class="absolute top-4 right-4 flex items-center">
             <label class="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" class="sr-only peer" ${room.isActive ? 'checked' : ''} onchange="toggleRoomStatus('${room._id}', this.checked)" />
-                <div class="w-11 h-6 bg-neutral-600 rounded-full peer-checked:bg-green-600 transition-colors duration-200"></div>
+                <div class="w-11 h-6 bg-neutral-600 rounded-full peer-checked:bg-green-500 transition-colors duration-200"></div>
                 <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-200 peer-checked:translate-x-5"></div>
             </label>
         </div>
@@ -67,7 +80,7 @@ function renderRoom(room) {
             <button onclick="joinRoom('${room._id}')" class="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded-md">Entrar</button>
         </div>
     `;
-
+    
     roomContainer.appendChild(card);
 }
 
@@ -89,21 +102,19 @@ async function toggleRoomStatus(roomId, newStatus) {
             throw new Error(errorData.message || 'Erro ao mudar o status da sala.');
         }
 
-        const data = await response.json();
-
         // Atualizar o status da sala no front-end
         const statusElement = document.getElementById(`status-${roomId}`);
         statusElement.textContent = newStatus ? 'Ativa' : 'Inativa';
-        statusElement.classList.toggle('text-green-500', newStatus);
-        statusElement.classList.toggle('text-red-500', !newStatus);
+        statusElement.classList.remove('text-green-500', 'text-red-500');
+        statusElement.classList.add(newStatus ? 'text-green-500' : 'text-red-500');
 
-        // Atualiza a lista de salas para refletir a mudança, se necessário
-        // listRooms();
+        // Recarregar a lista de salas para garantir que tudo está atualizado
+        listRooms();
     } catch (error) {
         console.error('Erro ao mudar o status da sala:', error);
-        // Removi o alerta, agora só loga no console
     }
 }
+
 
 // Função para criar uma nova sala
 async function createRoom() {

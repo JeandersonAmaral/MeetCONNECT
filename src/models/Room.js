@@ -26,6 +26,10 @@ const roomSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    createdBy: {
+        type: String,
+        required: false,
+    },
 });
 
 module.exports = mongoose.model("Room", roomSchema); // Certifique-se de que você está exportando o modelo corretamente
