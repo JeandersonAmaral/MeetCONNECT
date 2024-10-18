@@ -21,8 +21,14 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         const data = await response.json();
 
         if (response.ok) {
+            // Salva o token no localStorage
             localStorage.setItem('token', data.token);
             
+            // Verifica se o nome do usuário está disponível e salva
+            if (data.name) { // Ajuste aqui
+                localStorage.setItem('userName', data.name); // Salva o nome do usuário
+            }
+
             // Aguarda segundos antes de ocultar o carregador e redirecionar
             setTimeout(() => {
                 // Oculta o indicador de carregamento

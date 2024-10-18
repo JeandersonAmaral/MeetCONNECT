@@ -33,7 +33,7 @@ class UserController {
                 return res.status(401).json({ message: "Credenciais inválidas" });
             }
             const token = jwt.sign({ id: user.id, username: user.name }, process.env.JWT_SECRET, { expiresIn: "1h" });
-            res.json({ message: "Login bem-sucedido!", token });
+            res.json({ message: "Login bem-sucedido!", token, name: user.name });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

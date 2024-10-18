@@ -115,6 +115,34 @@ async function toggleRoomStatus(roomId, newStatus) {
     }
 }
 
+// Função para exibir o nome do usuário logado
+function showUserName() {
+    const userName = localStorage.getItem('userName');
+    if (userName) {
+        document.getElementById('userName').textContent = userName;
+    } else {
+        alert('Erro ao carregar o nome do usuário.');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const username = localStorage.getItem('username');
+
+    if (username) {
+        document.getElementById('userName').textContent = `Bem-vindo, ${username}!`;
+    } else {
+        document.getElementById('userName').textContent = 'Bem-vindo!';
+    }
+});
+
+
+// Verifica a autenticação e exibe o nome do usuário logado
+document.addEventListener('DOMContentLoaded', () => {
+    checkAuthentication(); // Função existente que verifica se o usuário está logado
+    showUserName(); // Exibe o nome do usuário
+    listRooms(); // Lista as salas após a verificação
+});
+
 
 // Função para criar uma nova sala
 async function createRoom() {
