@@ -264,17 +264,26 @@ async function deleteRoom(roomId) {
         });
 
         if (!response.ok) {
-            throw new Error('Erro ao excluir a sala.');
+            const errorData = await response.json();
+            
+            // Verifica se o erro é de permissão negada
+            if (response.status === 403) {
+                alert(errorData.message); // Exibe um alerta com a mensagem de erro
+                window.location.reload(); // Recarrega a página após o alerta
+            } else {
+                throw new Error(errorData.message || 'Erro ao excluir a sala.');
+            }
+        } else {
+            alert('Sala excluída com sucesso!');
+            window.location.reload(); // Recarrega a página após a exclusão bem-sucedida
         }
-
-        alert('Sala excluída com sucesso!');
-        closeConfirmationModal(); // Fecha o modal após a exclusão
-        listRooms(); // Atualiza a lista de salas após a exclusão
     } catch (error) {
         console.error('Erro ao excluir sala:', error);
         alert('Ocorreu um erro ao excluir a sala.');
+        window.location.reload(); // Recarrega a página em caso de erro inesperado
     }
 }
+
 
 document.getElementById('createRoomBtn').addEventListener('click', () => {
     document.getElementById('createRoomModal').classList.remove('hidden');

@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const { v4: uuidv4 } = require("uuid");
+const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
 const roomSchema = new mongoose.Schema({
     _id: {
@@ -21,18 +21,18 @@ const roomSchema = new mongoose.Schema({
         type: Boolean,
         default: true,
     },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
     createdBy: {
-        type: String, // Armazena o nome do criador
+        type: String,  // Nome do criador
         required: true,
     },
     creatorId: {
-        type: String, // Armazena o ID do criador
-        required: true,
+        type: String,  // ID do criador
+        required: true,  // Certifique-se de que este campo é obrigatório
     },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    }
 });
 
-module.exports = mongoose.model("Room", roomSchema);
+module.exports = mongoose.model('Room', roomSchema);
